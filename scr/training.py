@@ -8,9 +8,9 @@ def model_training(config_params, logger, model, tokenizer, train_dataloader, va
     learning_rate = config_params['training']['learning_rate']
     weight_decay = config_params['training']['weight_decay']
     warmup_fraction = config_params['training']['warmup_fraction']
-    n_steps = len(train_dataloader) * n_epochs
     
     n_epochs = config_params['training']['n_epochs']
+    n_steps = len(train_dataloader) * n_epochs
     device = config_params['training']['device']
 
     optimizer = AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
@@ -31,7 +31,7 @@ def model_training(config_params, logger, model, tokenizer, train_dataloader, va
     few_shot_sample = config_params['training']['few_shots_sample']
     few_shot_top_p = config_params['training']['few_shots_top_p']
     few_shot_temperature = config_params['training']['few_shot_temperature']
-    few_shot_repertition_penalty = config_params['training']['few_shot_repertition_penalty']
+    few_shot_repetition_penalty = config_params['training']['few_shot_repetition_penalty']
 
     model_save_folder = config_params['training']['save_folder']
     if model_save_folder[-1] != '/':
@@ -79,8 +79,9 @@ def model_training(config_params, logger, model, tokenizer, train_dataloader, va
                 model.eval()
                 with torch.no_grad(), torch.cuda.amp.autocast():
                     for i, few_shots_example in enumerate(few_shots_examples):
+                        #print(few_shots_example)
                         ids = tokenizer(few_shots_example, return_tensors='pt', add_special_tokens=False).to(device)['input_ids']
-                        outputs = model.generate(ids, max_length=few_shot_max_length, do_sample=few_shot_sample, top_p=few_shot_top_p, temperature=few_shot_temperature, repetition_penalty=few_shot_repertition_penalty)
+                        outputs = model.generate(ids, max_length=few_shot_max_length, do_sample=few_shot_sample, top_p=few_shot_top_p, temperature=few_shot_temperature, repetition_penalty=few_shot_repetition_penalty)
                         result = tokenizer.decode(outputs[0], skip_special_tokens=True)
                         
                         logger.info(f'Few-shot пример {i+1}: {result[:100]}...')

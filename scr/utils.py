@@ -4,6 +4,7 @@ import logging
 import numpy as np
 import torch
 import random
+import yaml
 
 def logger_configure(config_params, verbose=False):
     logger_file = config_params['utils']['logger_output_file']
@@ -35,3 +36,8 @@ def manual_seed(config_params):
     os.environ['PYTHONHASHSEED'] = str(fix_seed)
 
     # А можно ещё шаманить с детерминированностью куды, но это уже страшные материи
+
+
+def load_config_params(yaml_config_path: str):
+    with open(yaml_config_path, 'r') as config_params_file:
+        return yaml.safe_load(config_params_file)

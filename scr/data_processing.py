@@ -90,6 +90,7 @@ def create_tokenizer(config_params):
     data_clean_savefile_path = config_params['data_processing']['clean_savefile_path']
     tokenizer_vocabulary_size = config_params['data_processing']['vocabulary_size']
     tokenizer_savefile_path = config_params['data_processing']['tokenizer_savefile_path']
+    wrapped_tokenozer_savefile_path = config_params['data_processing']['wrapped_tokenozer_savefile_path']
     
     tokenizer_data_samples = []
 
@@ -116,14 +117,17 @@ def create_tokenizer(config_params):
     )
 
     tokenizer.save(tokenizer_savefile_path)
+
+    wrapped_tokenizer = PreTrainedTokenizerFast(tokenizer_file=tokenizer_savefile_path, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]')
+    wrapped_tokenizer.save_pretrained(wrapped_tokenozer_savefile_path)
     
-    return tokenizer
+    return wrapped_tokenizer
 
 
 def samples_blocks_division(data_sample, tokenizer, block_size=256):
     blocks = []
     for sample in data_sample['text']:
-        ids = tokenizer.encode(sample).ids
+        ids = tokenizer(sample)['input_ids']
 
         for i in range(0, len(ids), block_size // 2):
             blocks.append(ids[i: i + block_size])
@@ -142,18 +146,13 @@ def data_collator(batch, tokenizer):
     return input_ids, attention_mask
 
 
-def create_dataloader(config_params):
+def create_dataloader(config_params, wrapped_tokenizer):
     data_clean_savefile_path = config_params['data_processing']['clean_savefile_path']
     context_size = config_params['data_processing']['context_size']
-    tokenizer_savefile_path = config_params['data_processing']['tokenizer_savefile_path']
     data_batch_size = config_params['data_processing']['batch_size']
 
-    tokenizer = create_tokenizer(config_params)
-
     dataset = load_dataset('json', data_files=data_clean_savefile_path)['train']
-    blocked_tokenized_dataset = dataset.map(lambda sample: samples_blocks_division(sample, tokenizer, block_size=context_size), batched=True, remove_columns=['text'])
-
-    wrapped_tokenizer = PreTrainedTokenizerFast(tokenizer_file=tokenizer_savefile_path, pad_token='[PAD]', unk_token='[UNK]', eos_token='[EOS]')
+    blocked_tokenized_dataset = dataset.map(lambda sample: samples_blocks_division(sample, wrapped_tokenizer, block_size=context_size), batched=True, remove_columns=['text'])
     dataloader = DataLoader(
         blocked_tokenized_dataset,
         batch_size=data_batch_size,

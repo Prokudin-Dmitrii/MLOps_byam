@@ -1,0 +1,57 @@
+create_data_from_zero: True
+create_tokenizer_from_zero: True
+set_fixed_seed: True
+
+utils:
+  seed: 451
+  logger_output_file: './logger_output.log'
+
+data_processing:
+  source: 'hf://datasets/HuggingFaceFW/fineweb-2/data/ces_Latn/train'
+  size: 1
+  savefile_path: './data/czech_data.jsonl'
+  language_checker_path: './data/lid.176.bin'
+  clean_savefile_path: './data/clean_czech_data.jsonl'
+  language: 'cs'
+  language_confidence: 0.9
+  vocabulary_size: 5000
+  tokenizer_savefile_path: './data/BPE_tokenizer.json'
+  wrapped_tokenozer_savefile_path: './data/tokenizer/'
+  context_size: 256
+  batch_size: 64
+
+model:
+  n_positions: 256
+  n_embedding: 512
+  n_layer: 1
+  n_head: 1
+  final_checkpoint_save_path: './data/byam_step_final/'
+
+training:
+  n_epochs: 1
+  device: 'cuda'
+  learning_rate: 0.0005
+  weight_decay: 0.001
+  warmup_fraction: 0.1
+  few_shot_steps: 500
+  save_steps: 500
+  logger_save_steps: 100
+  few_shots_examples: ['Počasí v Praze ', 'Dnešní moskevští studenti ', 'Juba II. žil asi od roku 50 př. n. l., zemřel v roce 23 n. l. Jediný syn a dědic krále Juby I. Numidského ', 'Kapitán české fotbalové ']
+  few_shots_max_length: 256
+  few_shots_sample: True
+  few_shots_top_p: 0.9
+  few_shot_temperature: 0.9
+  few_shot_repetition_penalty: 1.2
+  save_folder: './data/checkpoints/'
+
+inference:
+  model_path: './data/byam_step_final/'
+  tokenizer_path: './data/tokenizer/'
+  device: 'cuda'
+  language: 'cs'
+  language_checker_path: './data/lid.176.bin'
+  max_length: 256
+  sample: True
+  top_p: 0.9
+  temperature: 0.9
+  repetition_penalty: 1.2
