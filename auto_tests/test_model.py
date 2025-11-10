@@ -2,7 +2,7 @@ from src.model import create_model
 from transformers import PreTrainedTokenizerFast
 
 def test_create_model():
-    tokenizer = PreTrainedTokenizerFast.from_pretrained('./data/tokenizer/')
+    tokenizer = PreTrainedTokenizerFast.from_pretrained('data/tokenizer/')
     
     fake_config = {
         'model': {
