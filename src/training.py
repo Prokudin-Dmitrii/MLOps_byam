@@ -21,7 +21,10 @@ def model_training(config_params, logger, model, tokenizer, train_dataloader, va
         num_training_steps = n_steps
     )
 
-    scaler = torch.cuda.amp.GradScaler()
+    if device != 'cpu':
+        scaler = torch.cuda.amp.GradScaler()
+    else:
+        scaler = None
 
     few_shot_steps = config_params['training']['few_shot_steps']
     save_steps = config_params['training']['save_steps']
@@ -56,14 +59,21 @@ def model_training(config_params, logger, model, tokenizer, train_dataloader, va
 
             optimizer.zero_grad(set_to_none=True)
 
-            with torch.cuda.amp.autocast():
+            if device != 'cpu':
+                with torch.cuda.amp.autocast():
+                    outputs = model(input_ids=input_ids.to(device), attention_mask=attention_masks.to(device), labels=labels.to(device))
+                    loss = outputs.loss
+
+                scaler.scale(loss).backward()
+
+                scaler.step(optimizer)
+                scaler.update()
+            else:
                 outputs = model(input_ids=input_ids.to(device), attention_mask=attention_masks.to(device), labels=labels.to(device))
                 loss = outputs.loss
-
-            scaler.scale(loss).backward()
-
-            scaler.step(optimizer)
-            scaler.update()
+                loss.backward()
+                optimizer.step()
+            
             scheduler.step()
 
             epoch_loss += loss.item()
