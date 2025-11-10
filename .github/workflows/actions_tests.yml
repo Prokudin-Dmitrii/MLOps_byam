@@ -1,8 +1,7 @@
 name: GitHub Actions Tests
 
 on:
-  push:
-  merge:
+  [push, merge]
 
 jobs:
   test:
