@@ -2,6 +2,7 @@ name: GitHub Actions Tests
 
 on:
   push:
+  merge:
 
 jobs:
   test:
@@ -21,6 +22,11 @@ jobs:
           pip install -r requirements.txt
           pip install --no-deps -r requirements_no_deps.txt
           pip install pytest
+      
+      - name: Set up Git LFS
+        run: |
+          git lfs install
+          git lfs pull
 
       - name: Tests Run
         run: pytest -v
