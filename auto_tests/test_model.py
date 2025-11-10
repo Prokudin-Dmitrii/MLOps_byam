@@ -1,8 +1,8 @@
 from src.model import create_model
-from transformers import GPT2TokenizerFast
+from transformers import PreTrainedTokenizerFast
 
 def test_create_model():
-    tokenizer = GPT2TokenizerFast.from_pretrained('./data/tokenizer/')
+    tokenizer = PreTrainedTokenizerFast.from_pretrained('./data/tokenizer/')
     
     fake_config = {
         'model': {
