@@ -110,3 +110,11 @@ stages:
       hash: md5
       md5: 697dc9549251f77b133cc80c6586f231
       size: 914
+  fetch_raw_data:
+    cmd: python -m steps.fetch_raw_data --config_params_path config_params.yaml 
+      --verbose 0
+    outs:
+    - path: data/czech_data.jsonl
+      hash: md5
+      md5: 1562cd417379a721af10c5f3fc99faa5
+      size: 1047847
