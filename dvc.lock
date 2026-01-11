@@ -118,3 +118,10 @@ stages:
       hash: md5
       md5: 1562cd417379a721af10c5f3fc99faa5
       size: 1047847
+  fetch_translator:
+    cmd: python -m steps.fetch_translator
+    outs:
+    - path: data/lid.176.bin
+      hash: md5
+      md5: 01810bc59c6a3d2b79c79e6336612f65
+      size: 131266198
