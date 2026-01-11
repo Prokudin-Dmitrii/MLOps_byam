@@ -8,6 +8,7 @@ stages:
     cmd: wget -O data/lid.176.bin https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin
     outs:
       - data/lid.176.bin
+      
   prepare:
     cmd: python -m steps.prepare --config_params_path config_params.yaml --verbose 0
     deps:
