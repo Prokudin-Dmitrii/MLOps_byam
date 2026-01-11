@@ -1,0 +1,14 @@
+FROM pytorch/torchserve:latest
+
+WORKDIR /home/model-server
+
+COPY model-store /home/model-server/model-store
+COPY config.properties /home/model-server/config.properties
+
+CMD ["torchserve",\
+     "--start",\
+     "--model-store", "/home/model-server/model-store",\
+     "--models", "mymodel=mymodel.mar",\
+     "--ts-config", "/home/model-server/config.properties",\
+     "--disable-token-auth",\
+     "--foreground"]
