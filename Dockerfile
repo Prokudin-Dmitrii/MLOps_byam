@@ -11,8 +11,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY src/ src/
+COPY steps/ steps/
 COPY model/ model/
 COPY data/tokenizer/ data/tokenizer/
 COPY config_params.yaml .
 
-ENTRYPOINT ["python", "-m", "src.predict"]
+ENTRYPOINT ["python", "-m", "steps.predict"]

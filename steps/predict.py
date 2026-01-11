@@ -35,7 +35,11 @@ def main():
     tokenizer = PreTrainedTokenizerFast.from_pretrained(config_params['inference']['tokenizer_path'])
     model = GPT2LMHeadModel.from_pretrained(config_params['inference']['model_path'])
 
-    device = config_params['inference']['device']
+    device = config_params['inference'].get('device', 'cpu')
+
+    if device == 'cuda' and not torch.cuda.is_available():
+        device = 'cpu'
+
     max_length = config_params['inference']['max_length']
     do_sample = config_params['inference']['sample']
     top_p = config_params['inference']['top_p']
