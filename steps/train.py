@@ -4,6 +4,7 @@ import argparse
 
 from transformers import PreTrainedTokenizerFast
 import torch
+import torch.nn as nn
 import mlflow
 import mlflow.transformers
 
@@ -22,6 +23,20 @@ def get_dvc_hash_from_lock(path: str) -> str:
         for out in stage.get('outs', []):
             if out['path'] == path:
                 return out[out['hash']]
+
+class GPT2Wrapper(nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+
+    def forward(self, input_ids):
+        outputs = self.model(
+            input_ids=input_ids,
+            use_cache=False,
+            return_dict=False
+        )
+        return outputs[0] 
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -69,7 +84,18 @@ def main():
         logger.info('Сохранение финального чекпоинта модели после обучения')
         model.save_pretrained(config_params['model']['final_checkpoint_save_path'])
 
-        torch.save(model.state_dict(), './model/model.pt')
+        #torch.save(model.state_dict(), './model/model.pt')
+        model.eval()
+        model = GPT2Wrapper(model)
+        example = tokenizer('Počasí v Praze ', return_tensors="pt", add_special_tokens=False).to(config_params['inference']['device'])['input_ids']
+        
+        model_script = torch.jit.trace(
+            model,
+            example,
+            strict=False
+        )
+
+        model_script.save('./model/model.pt')
 
         mlflow.log_artifacts(config_params['model']['final_checkpoint_save_path'], artifact_path='model_hf')
         mlflow.log_artifact('./model/model.pt')

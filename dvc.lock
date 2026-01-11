@@ -72,18 +72,18 @@ stages:
       size: 1232
     - path: steps/train.py
       hash: md5
-      md5: 275c9bcbeba00b545f827218fd2166f1
-      size: 1773
+      md5: 8ddad0d5220db5ead148dd840fafa3ad
+      size: 3715
     outs:
     - path: model/byam_step_final
       hash: md5
-      md5: 0be51337fc662fd276542673b4fdf76f.dir
+      md5: e0d6fba45a3856a4a9f0edc43c183791.dir
       size: 23380456
       nfiles: 3
     - path: model/model.pt
       hash: md5
-      md5: 5affb4df7b855c93073003c7a979d58a
-      size: 23383230
+      md5: e5e39aa73ded48d410dd07d80bc89ee5
+      size: 23479812
   evaluate:
     cmd: python -m steps.evaluate --config_params_path config_params.yaml 
       --input_sequence "Počasí v Praze"
@@ -94,7 +94,7 @@ stages:
       size: 1628
     - path: model/byam_step_final
       hash: md5
-      md5: 0be51337fc662fd276542673b4fdf76f.dir
+      md5: e0d6fba45a3856a4a9f0edc43c183791.dir
       size: 23380456
       nfiles: 3
     - path: src/utils.py
@@ -108,7 +108,7 @@ stages:
     outs:
     - path: evaluate_results.json
       hash: md5
-      md5: 697dc9549251f77b133cc80c6586f231
+      md5: 74fbb2c6ad40cbb2e602bc3731c5b8d3
       size: 914
   fetch_raw_data:
     cmd: python -m steps.fetch_raw_data --config_params_path config_params.yaml 
