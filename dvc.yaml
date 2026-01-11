@@ -1,4 +1,13 @@
 stages:
+  fetch_raw_data:
+    cmd: python -m steps.fetch_raw_data --config_params_path config_params.yaml --verbose 0
+    outs:
+      - data/czech_data.jsonl
+
+  fetch_translator:
+    cmd: wget -O data/lid.176.bin https://dl.fbaipublicfiles.com/fasttext/supervised-models/lid.176.bin
+    outs:
+      - data/lid.176.bin
   prepare:
     cmd: python -m steps.prepare --config_params_path config_params.yaml --verbose 0
     deps:
