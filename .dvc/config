@@ -1,0 +1,4 @@
+[core]
+    remote = dagshub
+['remote "dagshub"']
+    url = s3://dagshub.com/Prokudin-Dmitrii/MLOps_byam.dvc
