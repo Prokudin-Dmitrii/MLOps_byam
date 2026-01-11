@@ -28,12 +28,17 @@ jobs:
           git lfs install
           git lfs pull
       
-      - name: DVC pull
+      - name: Configure DVC
         env:
           DAGSHUB_USER: ${{ secrets.DAGSHUB_USER }}
           DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
         run: |
-          dvc pull
+          dvc remote modify dagshub auth basic
+          dvc remote modify dagshub user $DAGSHUB_USER
+          dvc remote modify dagshub password $DAGSHUB_TOKEN
+
+      - name: DVC pull
+        run: dvc pull
 
       - name: Tests Run
         run: pytest -v
