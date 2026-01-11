@@ -11,3 +11,4 @@ torchaudio==2.2.2+cu121
 transformers==4.57.1
 loguru==0.7.3
 humanize==4.14.0
+mlflow>=2.9.0

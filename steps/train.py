@@ -4,11 +4,24 @@ import argparse
 
 from transformers import PreTrainedTokenizerFast
 import torch
+import mlflow
+import mlflow.transformers
+
+import yaml
 
 from src.data_processing import create_dataloader
 from src.model import create_model
 from src.utils import logger_configure, manual_seed, load_config_params
 from src.training import model_training
+
+def get_dvc_hash_from_lock(path: str) -> str:
+    with open('dvc.lock', 'r') as f:
+        lock = yaml.safe_load(f)
+
+    for stage in lock['stages'].values():
+        for out in stage.get('outs', []):
+            if out['path'] == path:
+                return out[out['hash']]
 
 def main():
     parser = argparse.ArgumentParser()
@@ -22,28 +35,52 @@ def main():
     verbose = args.verbose
 
     config_params = load_config_params(yaml_config_path)
-
     logger = logger_configure(config_params, (verbose > 0))
 
-    set_seed = config_params['set_fixed_seed']
-    if set_seed:
-        logger.info('Фиксация random_seed')
-        manual_seed(config_params)
+    mlflow.set_experiment('BYAM_training')
+    mlflow.transformers.autolog()
 
-    tokenizer = PreTrainedTokenizerFast.from_pretrained(config_params['data_processing']['wrapped_tokenozer_savefile_path'])
-    
-    logger.info('Создание dataloader\'a')
-    train_dataloader = create_dataloader(config_params, tokenizer)
+    with mlflow.start_run():
+        mlflow.log_params(config_params['model'])
 
-    logger.info('Создание модели')
-    model = create_model(config_params, tokenizer)
+        mlflow.set_tag(
+            'dvc_data_hash',
+            get_dvc_hash_from_lock('data/clean_czech_data.jsonl')
+        )
 
-    model, epoch_losses = model_training(config_params, logger, model, tokenizer, train_dataloader)
+        set_seed = config_params['set_fixed_seed']
+        if set_seed:
+            logger.info('Фиксация random_seed')
+            manual_seed(config_params)
 
-    logger.info('Сохранение финального чекпоинта модели после обучения')
-    model.save_pretrained(config_params['model']['final_checkpoint_save_path'])
+        tokenizer = PreTrainedTokenizerFast.from_pretrained(config_params['data_processing']['wrapped_tokenozer_savefile_path'])
+        
+        logger.info('Создание dataloader\'a')
+        train_dataloader = create_dataloader(config_params, tokenizer)
 
-    torch.save(model.state_dict(), './model/model.pt')
+        logger.info('Создание модели')
+        model = create_model(config_params, tokenizer)
+
+        model, epoch_losses = model_training(config_params, logger, model, tokenizer, train_dataloader)
+
+        for epoch, loss in enumerate(epoch_losses):
+            mlflow.log_metric('train_loss', loss, step=epoch)
+
+        logger.info('Сохранение финального чекпоинта модели после обучения')
+        model.save_pretrained(config_params['model']['final_checkpoint_save_path'])
+
+        torch.save(model.state_dict(), './model/model.pt')
+
+        mlflow.log_artifacts(config_params['model']['final_checkpoint_save_path'], artifact_path='model_hf')
+        mlflow.log_artifact('./model/model.pt')
+
+        if os.path.exists('dvc.lock'):
+            mlflow.log_artifact('dvc.lock')
+
+        if os.path.exists('dvc.yaml'):
+            mlflow.log_artifact('dvc.yaml')
+
+        logger.info("MLflow run завершён")
 
 
 if __name__ == "__main__":
