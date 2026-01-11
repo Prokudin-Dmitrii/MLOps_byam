@@ -21,11 +21,24 @@ jobs:
           pip install -r requirements.txt
           pip install --no-deps -r requirements_no_deps.txt
           pip install pytest
+          pip install dvc
       
       - name: Set up Git LFS
         run: |
           git lfs install
           git lfs pull
+      
+      - name: Configure DVC
+        env:
+          DAGSHUB_USER: ${{ secrets.DAGSHUB_USER }}
+          DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+        run: |
+          dvc remote modify dagshub auth basic
+          dvc remote modify dagshub user $DAGSHUB_USER
+          dvc remote modify dagshub password $DAGSHUB_TOKEN
+
+      - name: DVC pull
+        run: dvc pull
 
       - name: Tests Run
         run: pytest -v

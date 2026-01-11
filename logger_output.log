@@ -1,0 +1,17 @@
+2026-01-11 16:14:54,175 [INFO] setup plugin alembic.autogenerate.schemas
+2026-01-11 16:14:54,176 [INFO] setup plugin alembic.autogenerate.tables
+2026-01-11 16:14:54,176 [INFO] setup plugin alembic.autogenerate.types
+2026-01-11 16:14:54,176 [INFO] setup plugin alembic.autogenerate.constraints
+2026-01-11 16:14:54,176 [INFO] setup plugin alembic.autogenerate.defaults
+2026-01-11 16:14:54,176 [INFO] setup plugin alembic.autogenerate.comments
+2026-01-11 16:14:56,007 [WARNING] From C:\Users\Дмитрий\AppData\Local\Programs\Python\Python312\Lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2026-01-11 16:14:56,392 [INFO] Фиксация random_seed
+2026-01-11 16:14:56,400 [INFO] Создание dataloader'a
+2026-01-11 16:15:08,156 [INFO] Создание модели
+2026-01-11 16:15:08,369 [INFO] Старт обучения на устройстве cuda. Обучение длится 1 эпох, всего 36 шагов.
+2026-01-11 16:15:08,369 [INFO] Старт эпохи 1 / 1.
+2026-01-11 16:15:10,173 [INFO] Конец эпохи 1 / 1, средний лосс за эпоху: 6.8451
+2026-01-11 16:15:10,173 [INFO] Конец обучения.
+2026-01-11 16:15:10,185 [INFO] Сохранение финального чекпоинта модели после обучения
+2026-01-11 16:15:10,251 [INFO] MLflow run завершён

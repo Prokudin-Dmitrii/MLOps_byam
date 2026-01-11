@@ -25,7 +25,7 @@ model:
   n_embedding: 512
   n_layer: 1
   n_head: 1
-  final_checkpoint_save_path: './data/byam_step_final/'
+  final_checkpoint_save_path: './model/byam_step_final/'
 
 training:
   n_epochs: 1
@@ -42,10 +42,10 @@ training:
   few_shots_top_p: 0.9
   few_shot_temperature: 0.9
   few_shot_repetition_penalty: 1.2
-  save_folder: './data/checkpoints/'
+  save_folder: './model/checkpoints/'
 
 inference:
-  model_path: './data/byam_step_final/'
+  model_path: './model/byam_step_final/'
   tokenizer_path: './data/tokenizer/'
   device: 'cuda'
   language: 'cs'

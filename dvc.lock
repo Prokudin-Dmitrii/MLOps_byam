@@ -1,0 +1,127 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m steps.prepare --config_params_path config_params.yaml 
+      --verbose 0
+    deps:
+    - path: config_params.yaml
+      hash: md5
+      md5: b9934036f98682b2e3eff2b35b33fcb5
+      size: 1628
+    - path: data/czech_data.jsonl
+      hash: md5
+      md5: 1562cd417379a721af10c5f3fc99faa5
+      size: 1047847
+    - path: data/lid.176.bin
+      hash: md5
+      md5: 01810bc59c6a3d2b79c79e6336612f65
+      size: 131266198
+    - path: src/data_processing.py
+      hash: md5
+      md5: 7ed02a5105b1ec36e3ecbd995f8f7384
+      size: 6241
+    - path: src/utils.py
+      hash: md5
+      md5: e5b7aa2c686cf984aa18ab319700fb6a
+      size: 1232
+    - path: steps/prepare.py
+      hash: md5
+      md5: 77dead58de794f4e0a52dfe79dd2094e
+      size: 1214
+    outs:
+    - path: data/BPE_tokenizer.json
+      hash: md5
+      md5: 50ad716c43bde3c6bd606342f516ac49
+      size: 344777
+    - path: data/clean_czech_data.jsonl
+      hash: md5
+      md5: 8807499b35b0d42515bd01fcb811312d
+      size: 1036485
+    - path: data/tokenizer
+      hash: md5
+      md5: b567ee2120af311dc4cdde1b520f84d5.dir
+      size: 345675
+      nfiles: 3
+  train:
+    cmd: python -m steps.train --config_params_path config_params.yaml --verbose
+      0
+    deps:
+    - path: config_params.yaml
+      hash: md5
+      md5: b9934036f98682b2e3eff2b35b33fcb5
+      size: 1628
+    - path: data/clean_czech_data.jsonl
+      hash: md5
+      md5: 8807499b35b0d42515bd01fcb811312d
+      size: 1036485
+    - path: src/data_processing.py
+      hash: md5
+      md5: 7ed02a5105b1ec36e3ecbd995f8f7384
+      size: 6241
+    - path: src/model.py
+      hash: md5
+      md5: 57994013ef807dd2b041aff29eb9c14b
+      size: 762
+    - path: src/training.py
+      hash: md5
+      md5: fb839d9bf918721ed93d0c3097ed49c9
+      size: 5963
+    - path: src/utils.py
+      hash: md5
+      md5: e5b7aa2c686cf984aa18ab319700fb6a
+      size: 1232
+    - path: steps/train.py
+      hash: md5
+      md5: 8ddad0d5220db5ead148dd840fafa3ad
+      size: 3715
+    outs:
+    - path: model/byam_step_final
+      hash: md5
+      md5: e0d6fba45a3856a4a9f0edc43c183791.dir
+      size: 23380456
+      nfiles: 3
+    - path: model/model.pt
+      hash: md5
+      md5: e5e39aa73ded48d410dd07d80bc89ee5
+      size: 23479812
+  evaluate:
+    cmd: python -m steps.evaluate --config_params_path config_params.yaml 
+      --input_sequence "Počasí v Praze"
+    deps:
+    - path: config_params.yaml
+      hash: md5
+      md5: b9934036f98682b2e3eff2b35b33fcb5
+      size: 1628
+    - path: model/byam_step_final
+      hash: md5
+      md5: e0d6fba45a3856a4a9f0edc43c183791.dir
+      size: 23380456
+      nfiles: 3
+    - path: src/utils.py
+      hash: md5
+      md5: e5b7aa2c686cf984aa18ab319700fb6a
+      size: 1232
+    - path: steps/evaluate.py
+      hash: md5
+      md5: 510111522121bd5b0cae27b65cb25ea2
+      size: 3645
+    outs:
+    - path: evaluate_results.json
+      hash: md5
+      md5: 74fbb2c6ad40cbb2e602bc3731c5b8d3
+      size: 914
+  fetch_raw_data:
+    cmd: python -m steps.fetch_raw_data --config_params_path config_params.yaml 
+      --verbose 0
+    outs:
+    - path: data/czech_data.jsonl
+      hash: md5
+      md5: 1562cd417379a721af10c5f3fc99faa5
+      size: 1047847
+  fetch_translator:
+    cmd: python -m steps.fetch_translator
+    outs:
+    - path: data/lid.176.bin
+      hash: md5
+      md5: 01810bc59c6a3d2b79c79e6336612f65
+      size: 131266198

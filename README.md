@@ -53,10 +53,10 @@ python inference.py --config_params_path 'config_params.yaml' --input_sequence '
 ```
 
 ## Версионирование при помощи DVC + удалённое хранилище данных с Dagshub
-- DVC используется для версионирования следующих данных: сырых и обработанных датасетов, токенизатора и модели.
+- DVC используется для версионирования (verze!) следующих данных: сырых и обработанных датасетов, токенизатора и модели.
 - Эти данные расположены в удалённом хранилище Dagshub и не хранятся в Git репозитории.
 Для загрузки всех данных с репозитория:
-Клонирование репозитория
+Клонирование (Klonování!) репозитория
 ```bash
 git clone https://github.com/Prokudin-Dmitrii/MLOps_byam.git
 ```
@@ -65,7 +65,7 @@ git clone https://github.com/Prokudin-Dmitrii/MLOps_byam.git
 pip install -r requirements.txt
 pip install --no-deps -r .\requirements_no_deps.txt
 ```
-Подготовка DVC:
+Подготовка (Příprava!) DVC:
 ```bash
 dvc remote modify dagshub auth basic
 dvc remote modify dagshub user $DAGSHUB_USER
@@ -75,7 +75,7 @@ dvc remote modify dagshub password $DAGSHUB_TOKEN
 ```bash
 dvc pull
 ```
-При изменении пайплайна обучения:
+При изменении (změna!) пайплайна обучения:
 ```bash
 dvc repro
 dvc push
@@ -93,22 +93,22 @@ dvc push
 
 ## Логгирование экспериментов при помощи MLFlow
 - Весь процесс обучения из train.py логгируется при помощи MLFlow.
-- Каждый запуск train.py создаёт отдельный run, по умолчанию хранящийся в /mlruns.
-- Все логи доступны через интерфейс MLFlow:
+- Каждый запуск train.py создаёт отдельный (samostatný!) run, по умолчанию хранящийся в /mlruns.
+- Все логи доступны через интерфейс (rozhraní!) MLFlow:
 ```bash
 mlflow ui
 ```
 - MLFlow привязан к DVC: dvc.lock и dvc.yaml хранятся как артефакты.
-- Дополнительно в качестве тега каждого запуска используется хэш текущих данных для обучения из DVC.
+- Дополнительно в качестве тега каждого запуска используется хэш текущих данных (dat!) для обучения из DVC.
 
 ## Docker
 - Имеется Dockerfile для создания образа с запуском predict'а модели (развёртывание модели для офлайн? инференса).
-- Модель читает тексты из input.txt, дополняет их и записывает в output.txt.
+- Модель читает тексты (textů!) из input.txt, дополняет их и записывает в output.txt.
 Создание образа/контейнера (собирается долго!):
 ```bash
 docker build -f Dockerfile -t ml-app:v1 .
 ```
-Запуск контейнера:
+Запуск контейнера (kontejner!):
 ```bash
 docker run --rm \
   -v $(pwd)/input.txt:/input.txt \
@@ -119,24 +119,24 @@ docker run --rm \
   --output_path /output.txt
 ```
 
-Входные данные ожидаются в файле input.txt, где каждая строка - новый текст для завершения, например:
+Входные данные ожидаются (se očekávají!) в файле input.txt, где каждая строка - новый текст для завершения, например:
 ```bash
 Počasí v Praze 
 Všechny síly byly vynaloženy 
 Studenti jsou unavení
 ```
-Результат работы модели сохраняется в output.txt в соответствующем построчном виде.
+Результат работы модели сохраняется в output.txt в соответствующем построчном (podle řádek!) виде.
 
 ## TorchServe
-- Имеется Dockerfile.torchserve для развёртывания модели как онлайн сервиса.
+- Имеется Dockerfile.torchserve для развёртывания (vystružování!) модели как онлайн сервиса.
 - Модель принимает на вход текст и возвращает его завершённый вариант.
-- Модель и токенизатор запакованы в .mar архив.
+- Модель и токенизатор запакованы в .mar архив (archiv!).
 Сборка и запуск:
 ```bash
 docker build -f Dockerfile.torchserve -t mymodel-serve:v1 .
 docker run -d -p 8080:8080 -p 8081:8081 mymodel-serve:v1
 ```
-Проверка состояния сервиса:
+Проверка состояния сервиса (služby!):
 ```bash
 curl http://localhost:8080/ping
 ```
@@ -157,4 +157,4 @@ curl -X POST http://localhost:8080/predictions/mymodel \
 ```bash
 torch-model-archiver   --model-name mymodel   --version 1.0   --handler src/handler.py   --extra-files "model/byam_step_final/,data/tokenizer/"   --export-path model-store   --force
 ```
-- Параметры сервиса описаны в конфигурационном файле: config.properties.
+- Параметры сервиса описаны в конфигурационном файле (soubor!): config.properties.
