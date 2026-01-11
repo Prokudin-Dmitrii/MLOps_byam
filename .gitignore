@@ -1,2 +1,6 @@
 **/__pycache__/
 .vscode/
+/data/*
+!data/czech_data.jsonl.dvc
+/evaluate_results.json
+/model
