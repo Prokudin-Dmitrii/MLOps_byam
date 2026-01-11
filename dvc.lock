@@ -1,0 +1,92 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m steps.prepare --config_params_path config_params.yaml 
+      --verbose 0
+    deps:
+    - path: src/data_processing.py
+      hash: md5
+      md5: 7ed02a5105b1ec36e3ecbd995f8f7384
+      size: 6241
+    - path: src/utils.py
+      hash: md5
+      md5: e5b7aa2c686cf984aa18ab319700fb6a
+      size: 1232
+    - path: steps/prepare.py
+      hash: md5
+      md5: b3b3784027eedd25b3dca2c923192c1f
+      size: 1327
+    outs:
+    - path: data/BPE_tokenizer.json
+      hash: md5
+      md5: 50ad716c43bde3c6bd606342f516ac49
+      size: 344777
+    - path: data/clean_czech_data.jsonl
+      hash: md5
+      md5: 8807499b35b0d42515bd01fcb811312d
+      size: 1036485
+    - path: data/czech_data.jsonl
+      hash: md5
+      md5: 1562cd417379a721af10c5f3fc99faa5
+      size: 1047847
+    - path: data/tokenizer
+      hash: md5
+      md5: b567ee2120af311dc4cdde1b520f84d5.dir
+      size: 345675
+      nfiles: 3
+  train:
+    cmd: python -m steps.train --config_params_path config_params.yaml --verbose
+      0
+    deps:
+    - path: data/clean_czech_data.jsonl
+      hash: md5
+      md5: 8807499b35b0d42515bd01fcb811312d
+      size: 1036485
+    - path: src/data_processing.py
+      hash: md5
+      md5: 7ed02a5105b1ec36e3ecbd995f8f7384
+      size: 6241
+    - path: src/model.py
+      hash: md5
+      md5: 57994013ef807dd2b041aff29eb9c14b
+      size: 762
+    - path: src/training.py
+      hash: md5
+      md5: fb839d9bf918721ed93d0c3097ed49c9
+      size: 5963
+    - path: src/utils.py
+      hash: md5
+      md5: e5b7aa2c686cf984aa18ab319700fb6a
+      size: 1232
+    - path: steps/train.py
+      hash: md5
+      md5: 11fabafb19a52248152aa824563155ad
+      size: 1701
+    outs:
+    - path: model
+      hash: md5
+      md5: 837eb55a82ecabc37185750b8f1d8739.dir
+      size: 23380456
+      nfiles: 3
+  evaluate:
+    cmd: python -m steps.evaluate --config_params_path config_params.yaml 
+      --input_sequence "Počasí v Praze"
+    deps:
+    - path: model
+      hash: md5
+      md5: 837eb55a82ecabc37185750b8f1d8739.dir
+      size: 23380456
+      nfiles: 3
+    - path: src/utils.py
+      hash: md5
+      md5: e5b7aa2c686cf984aa18ab319700fb6a
+      size: 1232
+    - path: steps/evaluate.py
+      hash: md5
+      md5: 510111522121bd5b0cae27b65cb25ea2
+      size: 3645
+    outs:
+    - path: evaluate_results.json
+      hash: md5
+      md5: 997001abce6a2a20cc0827f79e69446e
+      size: 914

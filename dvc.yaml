@@ -1,0 +1,35 @@
+stages:
+  prepare:
+    cmd: python -m steps.prepare --config_params_path config_params.yaml --verbose 0
+    deps:
+      - steps/prepare.py
+      - src/data_processing.py
+      - src/utils.py
+
+    outs:
+      - data/clean_czech_data.jsonl
+      - data/czech_data.jsonl
+      - data/BPE_tokenizer.json
+      - data/tokenizer
+
+  train:
+    cmd: python -m steps.train --config_params_path config_params.yaml --verbose 0
+    deps:
+      - steps/train.py
+      - src/data_processing.py
+      - src/model.py
+      - src/utils.py
+      - src/training.py
+      - data/clean_czech_data.jsonl
+    outs:
+      - model
+
+  evaluate:
+    cmd: python -m steps.evaluate --config_params_path config_params.yaml --input_sequence "Počasí v Praze" 
+    deps:
+      - steps/evaluate.py
+      - src/utils.py
+      - model
+
+    outs:
+      - evaluate_results.json
