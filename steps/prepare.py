@@ -26,9 +26,6 @@ def main():
         logger.info('Фиксация random_seed')
         manual_seed(config_params)
 
-    logger.info('Загрузка изначальных данных')
-    load_initial_data(config_params)
-
     logger.info('Предобработка данных')
     process_data(config_params)
 

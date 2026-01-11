@@ -3,6 +3,7 @@ import os
 import argparse
 
 from transformers import PreTrainedTokenizerFast
+import torch
 
 from src.data_processing import create_dataloader
 from src.model import create_model
@@ -41,6 +42,8 @@ def main():
 
     logger.info('Сохранение финального чекпоинта модели после обучения')
     model.save_pretrained(config_params['model']['final_checkpoint_save_path'])
+
+    torch.save(model.state_dict(), './model/model.pt')
 
 
 if __name__ == "__main__":

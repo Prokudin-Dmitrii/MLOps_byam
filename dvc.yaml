@@ -5,10 +5,11 @@ stages:
       - steps/prepare.py
       - src/data_processing.py
       - src/utils.py
+      - config_params.yaml
+      - data/czech_data.jsonl
 
     outs:
       - data/clean_czech_data.jsonl
-      - data/czech_data.jsonl
       - data/BPE_tokenizer.json
       - data/tokenizer
 
@@ -21,15 +22,18 @@ stages:
       - src/utils.py
       - src/training.py
       - data/clean_czech_data.jsonl
+      - config_params.yaml
     outs:
-      - model
+      - model/byam_step_final
+      - model/model.pt
 
   evaluate:
     cmd: python -m steps.evaluate --config_params_path config_params.yaml --input_sequence "Počasí v Praze" 
     deps:
       - steps/evaluate.py
       - src/utils.py
-      - model
+      - model/byam_step_final
+      - config_params.yaml
 
     outs:
       - evaluate_results.json
