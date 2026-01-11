@@ -16,7 +16,7 @@ class FakeLoader:
 
 def test_model_training_runs(tmp_path):
     tokenizer = PreTrainedTokenizerFast.from_pretrained('data/tokenizer/')
-    model = GPT2LMHeadModel.from_pretrained('data/byam_step_final/')
+    model = GPT2LMHeadModel.from_pretrained('model/byam_step_final/')
 
     fake_config_params = {
         'training': {
