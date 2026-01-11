@@ -2,5 +2,6 @@
 .vscode/
 /data/*
 !data/czech_data.jsonl.dvc
+!lid.176.bin.dvc
 /evaluate_results.json
 /model

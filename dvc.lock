@@ -4,6 +4,18 @@ stages:
     cmd: python -m steps.prepare --config_params_path config_params.yaml 
       --verbose 0
     deps:
+    - path: config_params.yaml
+      hash: md5
+      md5: b9934036f98682b2e3eff2b35b33fcb5
+      size: 1628
+    - path: data/czech_data.jsonl
+      hash: md5
+      md5: 1562cd417379a721af10c5f3fc99faa5
+      size: 1047847
+    - path: data/lid.176.bin
+      hash: md5
+      md5: 01810bc59c6a3d2b79c79e6336612f65
+      size: 131266198
     - path: src/data_processing.py
       hash: md5
       md5: 7ed02a5105b1ec36e3ecbd995f8f7384
@@ -14,8 +26,8 @@ stages:
       size: 1232
     - path: steps/prepare.py
       hash: md5
-      md5: b3b3784027eedd25b3dca2c923192c1f
-      size: 1327
+      md5: 77dead58de794f4e0a52dfe79dd2094e
+      size: 1214
     outs:
     - path: data/BPE_tokenizer.json
       hash: md5
@@ -25,10 +37,6 @@ stages:
       hash: md5
       md5: 8807499b35b0d42515bd01fcb811312d
       size: 1036485
-    - path: data/czech_data.jsonl
-      hash: md5
-      md5: 1562cd417379a721af10c5f3fc99faa5
-      size: 1047847
     - path: data/tokenizer
       hash: md5
       md5: b567ee2120af311dc4cdde1b520f84d5.dir
@@ -38,6 +46,10 @@ stages:
     cmd: python -m steps.train --config_params_path config_params.yaml --verbose
       0
     deps:
+    - path: config_params.yaml
+      hash: md5
+      md5: b9934036f98682b2e3eff2b35b33fcb5
+      size: 1628
     - path: data/clean_czech_data.jsonl
       hash: md5
       md5: 8807499b35b0d42515bd01fcb811312d
@@ -60,21 +72,29 @@ stages:
       size: 1232
     - path: steps/train.py
       hash: md5
-      md5: 11fabafb19a52248152aa824563155ad
-      size: 1701
+      md5: 275c9bcbeba00b545f827218fd2166f1
+      size: 1773
     outs:
-    - path: model
+    - path: model/byam_step_final
       hash: md5
-      md5: 837eb55a82ecabc37185750b8f1d8739.dir
+      md5: 0be51337fc662fd276542673b4fdf76f.dir
       size: 23380456
       nfiles: 3
+    - path: model/model.pt
+      hash: md5
+      md5: 5affb4df7b855c93073003c7a979d58a
+      size: 23383230
   evaluate:
     cmd: python -m steps.evaluate --config_params_path config_params.yaml 
       --input_sequence "Počasí v Praze"
     deps:
-    - path: model
+    - path: config_params.yaml
       hash: md5
-      md5: 837eb55a82ecabc37185750b8f1d8739.dir
+      md5: b9934036f98682b2e3eff2b35b33fcb5
+      size: 1628
+    - path: model/byam_step_final
+      hash: md5
+      md5: 0be51337fc662fd276542673b4fdf76f.dir
       size: 23380456
       nfiles: 3
     - path: src/utils.py
@@ -88,5 +108,5 @@ stages:
     outs:
     - path: evaluate_results.json
       hash: md5
-      md5: 997001abce6a2a20cc0827f79e69446e
+      md5: 697dc9549251f77b133cc80c6586f231
       size: 914
